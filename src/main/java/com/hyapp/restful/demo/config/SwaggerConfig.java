@@ -27,7 +27,6 @@ public class SwaggerConfig {
                 .build();
     }
 
-
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("基于Swagger构建的Rest API文档")
