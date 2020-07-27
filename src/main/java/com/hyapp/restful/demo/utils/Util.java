@@ -148,7 +148,7 @@ public class Util {
         paramMap.put("event", event);
         paramMap.put("message", message);
 
-        String url = "https://apiext.huya.com/message/deliverRoomByProfileId?appId="+appId+"&extId=" + extId;
+        String url = "https://apiext.huya.com/message/deliverByProfileId?appId="+appId+"&extId=" + extId;
         String resString = sendPost(url, headerMap, paramMap);
         return resString;
     }
