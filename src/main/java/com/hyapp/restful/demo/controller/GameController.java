@@ -160,7 +160,7 @@ public class GameController {
                 userToStatus.put(user, Status.IN_GAME);
             }
             for (String user : userInRoom) {
-                util.postEventAndMessageByProfileId(user, Event.Start.getEvent(), playerStatus.toString());
+                util.postEventAndMessageByProfileId(user, Event.START.getEvent(), playerStatus.toString());
             }
             return result.sendSuccessResult("已准备,游戏马上开始！");
         } catch (Exception e) {
