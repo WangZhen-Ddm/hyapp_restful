@@ -135,7 +135,7 @@ public class Util {
 
     public static String postEventAndMessageByProfileId(String profileId, String event, String message) {
         String appId = "vb14674090674c43";      //小程序开发者ID（成为开发者后，https://ext.huya.com可查）
-        String extId = "094434a5fc1183e5";              //小程序ID（创建小程序后，https://ext.huya.com可查）
+        String extId = "cye0vuh7";              //小程序ID（创建小程序后，https://ext.huya.com可查）
         String secret = "f0234d9ace3d1cdcc5a35c7e676465b0";     //小程序开发者密钥（成为开发者后，https://ext.huya.com可查）
 
         //设置header参数
