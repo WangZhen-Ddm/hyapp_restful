@@ -105,7 +105,8 @@ public class GameController {
                 playerList.add(userToPlayer.get(user));
             }
             for (String user : userToRoom.get(roomID)) {
-                util.postEventAndMessageByProfileId(user, Event.JOIN.getEvent(), playerList.toString());
+                String res = util.postEventAndMessageByProfileId(user, Event.JOIN.getEvent(), playerList.toString());
+                System.out.println(res);
             }
             return result.sendSuccessResult("加入成功！");
         } catch (Exception e) {
