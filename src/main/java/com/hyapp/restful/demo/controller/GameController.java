@@ -9,6 +9,7 @@ import com.hyapp.restful.demo.service.GameService;
 import com.hyapp.restful.demo.utils.Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Api(tags = "游戏接口")
 @RestController
 @RequestMapping("/game")
+@Slf4j
 public class GameController {
 
     /**
@@ -106,8 +108,9 @@ public class GameController {
             }
             for (String user : userToRoom.get(roomID)) {
                 String res = util.postEventAndMessageByProfileId(user, Event.JOIN.getEvent(), playerList.toString());
-                System.out.println(res);
+                log.debug(res);
             }
+            log.debug("join");
             return result.sendSuccessResult("加入成功！");
         } catch (Exception e) {
             return result.sendFailedMessage(e.getMessage());
