@@ -46,6 +46,9 @@ public class GameController {
      * 根据用户id映射游戏结果
      */
     private Map<String, Integer> userToResult = new ConcurrentHashMap<>();
+    /**
+     * 房间人数最大值
+     */
     private static final int MAX_PEOPLE = 2;
 
     @Autowired
@@ -84,9 +87,12 @@ public class GameController {
                                         @RequestParam(value = "picUrl") String picUrl) {
         ResultModel<String> result = new ResultModel<>();
         try {
+            if(!userToRoom.containsKey(roomID)) {
+                return result.sendFailedMessage("房间不存在！");
+            }
             userToStatus.put(unionId, Status.IN_ROOM);
             if (userToRoom.get(roomID).size() >= MAX_PEOPLE) {
-                return new ResultModel<String>().sendFailedMessage("人数已满，无法加入！");
+                return result.sendFailedMessage("人数已满，无法加入！");
             }
             userToRoom.get(roomID).add(unionId);
             Player player = new Player();
