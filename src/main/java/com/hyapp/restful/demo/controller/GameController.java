@@ -70,6 +70,7 @@ public class GameController {
             result = gameService.createRoom(unionId);
             userToRoom.put(String.valueOf(result.getResult()), new ArrayList<>());
             userToRoom.get(String.valueOf(result.getResult())).add(unionId);
+            log.info(unionId);
             Player player = new Player();
             player.setUnionId(unionId);
             player.setNickName(nickName);
