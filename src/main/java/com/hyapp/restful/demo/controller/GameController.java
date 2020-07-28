@@ -103,14 +103,15 @@ public class GameController {
             player.setPicUrl(picUrl);
             userToPlayer.put(unionId, player);
             List<Player> playerList = new ArrayList<>();
-            for (String user : userToRoom.get(roomID)) {
+            List<String> userInRoom = userToRoom.get(roomID);
+            for (String user : userInRoom) {
                 playerList.add(userToPlayer.get(user));
             }
-            for (String user : userToRoom.get(roomID)) {
-                String res = util.postEventAndMessageByProfileId(user, Event.JOIN.getEvent(), playerList.toString());
+            for (String profileId : userInRoom) {
+                log.info(profileId);
+                String res = util.postEventAndMessageByProfileId(profileId, Event.JOIN.getEvent(), playerList.toString());
                 log.info(res);
             }
-            log.info("join");
             return result.sendSuccessResult("加入成功！");
         } catch (Exception e) {
             return result.sendFailedMessage(e.getMessage());
