@@ -1,10 +1,6 @@
 package com.hyapp.restful.demo.service;
 
 import com.hyapp.restful.demo.common.ResultModel;
-import com.hyapp.restful.demo.entity.GameResult;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wang Zhen
@@ -12,7 +8,15 @@ import java.util.Map;
  */
 public interface GameService {
 
-    ResultModel<Integer> createRoom(String createUserID);
+    ResultModel<Integer> createRoom(String unionId, String nickName, String picUrl);
 
-    GameResult getGameResult(List<String> userInRoom, Map<String, Integer> userInRoomToGameResult);
+    ResultModel<String> joinGame(Integer roomID, String unionId, String nickName, String picUrl);
+
+    ResultModel<String> leaveGame(Integer roomID, String unionId);
+
+    ResultModel<String> setReady(Integer roomID, String unionId);
+
+    ResultModel<String> setUnready(Integer roomID, String unionId);
+
+    ResultModel<String> finishGame(Integer roomID, String unionId, Integer score);
 }

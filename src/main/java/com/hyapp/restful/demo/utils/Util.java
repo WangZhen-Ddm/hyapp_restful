@@ -3,6 +3,7 @@ package com.hyapp.restful.demo.utils;
 import java.io.IOException;
 import java.util.*;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -16,6 +17,7 @@ import org.apache.http.util.EntityUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,7 +25,21 @@ import org.springframework.stereotype.Component;
  * @date 2020/7/24 10:38 上午
  */
 @Component
+@Slf4j
 public class Util {
+
+    @Autowired
+    private RedisUtil redisUtil;
+
+    /**
+     * token过期时间，单位为ms
+     */
+    private static long expireTime = 10 * 60 * 1000;
+
+    /**
+     * redis过期时间，比token过期短1min，注意单位为s
+     */
+    private static long redisExpireTime = 9 * 60;
 
     /**
      * 生效请求jwt凭证
@@ -36,7 +52,7 @@ public class Util {
     public static String getApiextJwtString(String appId, String secret, String extId, String profileId){
         //获取时间戳（毫秒）
         long currentTimeMillis = System.currentTimeMillis();
-        long expireTimeMillis = System.currentTimeMillis() + 10 * 60 * 1000;  //超时时间:通常设置10分钟有效，即exp=iat+600，注意不少于当前时间且不超过当前时间60分钟
+        long expireTimeMillis = System.currentTimeMillis() + expireTime;  //超时时间:通常设置10分钟有效，即exp=iat+600，注意不少于当前时间且不超过当前时间60分钟
         Date iat = new Date(currentTimeMillis);
         Date exp = new Date(expireTimeMillis);
 
@@ -133,14 +149,21 @@ public class Util {
         return result;
     }
 
-    public static String postEventAndMessageByProfileId(String profileId, String event, String message) {
+    public String postEventAndMessageByProfileId(String profileId, String event, String message) {
         String appId = "vb14674090674c43";      //小程序开发者ID（成为开发者后，https://ext.huya.com可查）
         String extId = "cye0vuh7";              //小程序ID（创建小程序后，https://ext.huya.com可查）
         String secret = "f0234d9ace3d1cdcc5a35c7e676465b0";     //小程序开发者密钥（成为开发者后，https://ext.huya.com可查）
 
         //设置header参数
         Map<String, Object> headerMap = new HashMap<String, Object>();
-        headerMap.put("authorization", getApiextJwtString(appId, secret, extId, profileId));
+        StringBuilder token = new StringBuilder();
+        if(!redisUtil.hasKey(profileId)) {
+            token.append(getApiextJwtString(appId, secret, extId, profileId));
+            redisUtil.set(profileId, token, redisExpireTime);
+        } else {
+            token.append(redisUtil.get(profileId));
+        }
+        headerMap.put("authorization", token.toString());
 
         //设置body参数
         Map<String, Object> paramMap = new HashMap<String, Object>();
