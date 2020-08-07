@@ -238,8 +238,6 @@ public class GameServiceImpl implements GameService {
             gameResult.setWinner(winner);
             gameResult.setEqual(equal);
             gameResult.setPlayerList(playerList);
-            Random rand = new Random();
-            gameResult.setPunishment(rand.nextInt(8));
             return gameResult;
         } catch (Exception e) {
             throw e;

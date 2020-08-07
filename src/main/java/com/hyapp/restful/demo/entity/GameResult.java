@@ -16,6 +16,4 @@ public class GameResult {
     private List<Player> playerList;
 
     private boolean equal;
-
-    private int punishment;
 }
