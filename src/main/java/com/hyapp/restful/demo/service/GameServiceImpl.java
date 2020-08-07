@@ -201,6 +201,7 @@ public class GameServiceImpl implements GameService {
                 userToStatus.put(user, Status.IN_ROOM);
             }
             GameResult gameResult = this.getGameResult(userInRoom, userInRoomToGameResult);
+            gameMapper.insertGameResult(gameResult, roomID);
             for (String user : userInRoom) {
                 util.postEventAndMessageByProfileId(user, Event.FINISH.getEvent(), gameResult.toString());
             }
@@ -240,6 +241,34 @@ public class GameServiceImpl implements GameService {
             return result;
         } catch (Exception e) {
             throw e;
+        }
+    }
+
+    @Override
+    public ResultModel<String> chooseCirclePunishment(Integer roomID, Integer punishmentID) {
+        ResultModel<String> result = new ResultModel<>();
+        try {
+            List<String> userInRoom = userToRoom.get(roomID);
+            for (String user : userInRoom) {
+                util.postEventAndMessageByProfileId(user, Event.RESULT.getEvent(), String.valueOf(punishmentID));
+            }
+            return result.sendSuccessResult("选择转盘惩罚成功！");
+        } catch (Exception e) {
+            return result.sendFailedMessage(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResultModel<String> choosePersonalizedPunishment(Integer roomID, String punishment) {
+        ResultModel<String> result = new ResultModel<>();
+        try {
+            List<String> userInRoom = userToRoom.get(roomID);
+            for (String user : userInRoom) {
+                util.postEventAndMessageByProfileId(user, Event.RESULT.getEvent(), punishment);
+            }
+            return result.sendSuccessResult("选择自定义惩罚成功！");
+        } catch (Exception e) {
+            return result.sendFailedMessage(e.getMessage());
         }
     }
 }

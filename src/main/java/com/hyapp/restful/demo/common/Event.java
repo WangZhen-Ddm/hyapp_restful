@@ -10,7 +10,8 @@ public enum Event {
     READY("ready"),
     UNREADY("unready"),
     START("start"),
-    FINISH("finish");
+    FINISH("finish"),
+    RESULT("result");
 
     private String event;
 

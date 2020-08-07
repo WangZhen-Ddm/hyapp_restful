@@ -68,4 +68,18 @@ public class GameController {
                                           @RequestParam(value = "score") int score) {
         return gameService.finishGame(roomID, unionId, score);
     }
+
+    @ApiOperation(value = "转盘惩罚")
+    @RequestMapping(value = "/punishment/circle", method = RequestMethod.POST)
+    public ResultModel<String> chooseCirclePunishment(@RequestParam(value = "roomID") Integer roomID,
+                                                      @RequestParam(value = "punishmentID") Integer punishmentID) {
+        return gameService.chooseCirclePunishment(roomID, punishmentID);
+    }
+
+    @ApiOperation(value = "自定义惩罚")
+    @RequestMapping(value = "/punishment/personalized", method = RequestMethod.POST)
+    public ResultModel<String> choosePersonalizedPunishment(@RequestParam(value = "roomID") Integer roomID,
+                                                            @RequestParam(value = "punishment") String punishment) {
+        return gameService.choosePersonalizedPunishment(roomID, punishment);
+    }
 }

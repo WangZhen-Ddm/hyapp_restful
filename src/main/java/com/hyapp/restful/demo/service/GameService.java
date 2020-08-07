@@ -1,6 +1,7 @@
 package com.hyapp.restful.demo.service;
 
 import com.hyapp.restful.demo.common.ResultModel;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Wang Zhen
@@ -19,4 +20,8 @@ public interface GameService {
     ResultModel<String> setUnready(Integer roomID, String unionId);
 
     ResultModel<String> finishGame(Integer roomID, String unionId, Integer score);
+
+    ResultModel<String> chooseCirclePunishment(Integer roomID, Integer punishmentID);
+
+    ResultModel<String> choosePersonalizedPunishment(Integer roomID, String punishment);
 }

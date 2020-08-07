@@ -1,5 +1,6 @@
 package com.hyapp.restful.demo.mapper;
 
+import com.hyapp.restful.demo.entity.GameResult;
 import com.hyapp.restful.demo.entity.Room;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,4 +18,7 @@ public interface GameMapper {
     @Insert("insert into room (createUserID) values (#{createUserID})")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     void insertRoom(Room room);
+
+    @Insert("insert into room (gameResult) values (#{gameResult}) where id = (#{roomID})")
+    void insertGameResult(GameResult gameResult, Integer roomID);
 }
