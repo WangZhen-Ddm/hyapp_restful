@@ -19,6 +19,6 @@ public interface GameMapper {
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     void insertRoom(Room room);
 
-    @Insert("insert into room (gameResult) values (#{gameResult}) where id = (#{roomID})")
-    void insertGameResult(GameResult gameResult, Integer roomID);
+    @Insert("update room set gameResult = #{gameResult} where id = #{roomID}")
+    void insertGameResult(String gameResult, Integer roomID);
 }

@@ -1,6 +1,7 @@
 package com.hyapp.restful.demo.service;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.hyapp.restful.demo.common.Event;
 import com.hyapp.restful.demo.common.ResultModel;
 import com.hyapp.restful.demo.common.Status;
@@ -9,6 +10,7 @@ import com.hyapp.restful.demo.entity.Player;
 import com.hyapp.restful.demo.entity.Room;
 import com.hyapp.restful.demo.mapper.GameMapper;
 import com.hyapp.restful.demo.utils.Util;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2020/7/24 1:49 下午
  */
 @Service
+@Slf4j
 public class GameServiceImpl implements GameService {
 
     /**
@@ -201,7 +204,7 @@ public class GameServiceImpl implements GameService {
                 userToStatus.put(user, Status.IN_ROOM);
             }
             GameResult gameResult = this.getGameResult(userInRoom, userInRoomToGameResult);
-            gameMapper.insertGameResult(gameResult, roomID);
+            gameMapper.insertGameResult(JSONObject.toJSONString(gameResult), roomID);
             for (String user : userInRoom) {
                 util.postEventAndMessageByProfileId(user, Event.FINISH.getEvent(), gameResult.toString());
             }
@@ -212,7 +215,6 @@ public class GameServiceImpl implements GameService {
     }
 
     private GameResult getGameResult(List<String> userInRoom, Map<String, Integer> userInRoomToGameResult) {
-        GameResult result = new GameResult();
         try {
             GameResult gameResult = new GameResult();
             List<Player> playerList = new ArrayList<>();
@@ -238,7 +240,7 @@ public class GameServiceImpl implements GameService {
             gameResult.setPlayerList(playerList);
             Random rand = new Random();
             gameResult.setPunishment(rand.nextInt(8));
-            return result;
+            return gameResult;
         } catch (Exception e) {
             throw e;
         }
