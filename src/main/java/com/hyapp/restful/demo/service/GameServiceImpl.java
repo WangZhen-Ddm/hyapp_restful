@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hyapp.restful.demo.common.Event;
 import com.hyapp.restful.demo.common.ResultModel;
 import com.hyapp.restful.demo.common.Status;
-import com.hyapp.restful.demo.entity.GameResult;
-import com.hyapp.restful.demo.entity.Player;
-import com.hyapp.restful.demo.entity.Room;
+import com.hyapp.restful.demo.entity.*;
 import com.hyapp.restful.demo.mapper.GameMapper;
 import com.hyapp.restful.demo.utils.Util;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +53,7 @@ public class GameServiceImpl implements GameService {
     private Integer getRoomID(String unionId) {
         try {
             Room room = new Room();
-            room.setCreateUserID(unionId);
+            room.setCreatorUnionId(unionId);
             gameMapper.insertRoom(room);
             return room.getId();
         } catch (Exception e) {
@@ -194,18 +192,25 @@ public class GameServiceImpl implements GameService {
             userToResult.put(unionId, score);
             Map<String, Integer> userInRoomToGameResult = new HashMap<>();
             List<String> userInRoom = userToRoom.get(roomID);
+            if(userInRoom.size()==1) {
+                String user = userInRoom.get(0);
+                userToStatus.put(user, Status.IN_ROOM);
+                gameMapper.insertSingleGameResult(unionId, score);
+                return result.sendSuccessResult("完成游戏，请等待游戏结果！");
+            }
             for (String user : userInRoom) {
                 if (userToStatus.get(user) != Status.FINISH) {
                     return result.sendSuccessResult("完成游戏，请等待游戏结果！");
                 }
                 userInRoomToGameResult.put(user, userToResult.get(user));
             }
+            GameResult gameResult = this.getGameResult(userInRoom, userInRoomToGameResult);
+            String winner = JSONObject.toJSONString(gameResult.getWinner());
+            String playerList = JSONObject.toJSONString(gameResult.getPlayerList());
+            boolean equal = gameResult.getEqual();
             for (String user : userInRoom) {
                 userToStatus.put(user, Status.IN_ROOM);
-            }
-            GameResult gameResult = this.getGameResult(userInRoom, userInRoomToGameResult);
-            gameMapper.insertGameResult(JSONObject.toJSONString(gameResult), roomID);
-            for (String user : userInRoom) {
+                gameMapper.insertGameResult(user, winner, playerList, equal);
                 util.postEventAndMessageByProfileId(user, Event.FINISH.getEvent(), gameResult.toString());
             }
             return result.sendSuccessResult("完成游戏，请等待游戏结果！");
@@ -267,6 +272,28 @@ public class GameServiceImpl implements GameService {
                 util.postEventAndMessageByProfileId(user, Event.RESULT.getEvent(), punishment);
             }
             return result.sendSuccessResult("选择自定义惩罚成功！");
+        } catch (Exception e) {
+            return result.sendFailedMessage(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResultModel<List<GameResultWithTime>> getGameResultByUnionId(String unionId) {
+        ResultModel<List<GameResultWithTime>> result = new ResultModel<>();
+        try {
+            List<GameResultWithTime> list = gameMapper.selectGameResultByUnionId(unionId);
+            return result.sendSuccessResult(list);
+        } catch (Exception e) {
+            return result.sendFailedMessage(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResultModel<List<SingleGameResultWithTime>> getSingleGameResultByUnionId(String unionId) {
+        ResultModel<List<SingleGameResultWithTime>> result = new ResultModel<>();
+        try {
+            List<SingleGameResultWithTime> list = gameMapper.selectSingleGameResultByUnionId(unionId);
+            return result.sendSuccessResult(list);
         } catch (Exception e) {
             return result.sendFailedMessage(e.getMessage());
         }

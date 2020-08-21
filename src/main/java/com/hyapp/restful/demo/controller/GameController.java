@@ -1,6 +1,9 @@
 package com.hyapp.restful.demo.controller;
 
 import com.hyapp.restful.demo.common.ResultModel;
+import com.hyapp.restful.demo.entity.GameResult;
+import com.hyapp.restful.demo.entity.GameResultWithTime;
+import com.hyapp.restful.demo.entity.SingleGameResultWithTime;
 import com.hyapp.restful.demo.service.GameService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 /**
@@ -81,5 +86,17 @@ public class GameController {
     public ResultModel<String> choosePersonalizedPunishment(@RequestParam(value = "roomID") Integer roomID,
                                                             @RequestParam(value = "punishment") String punishment) {
         return gameService.choosePersonalizedPunishment(roomID, punishment);
+    }
+
+    @ApiOperation(value = "获取双人游戏记录")
+    @RequestMapping(value = "/get/result", method = RequestMethod.POST)
+    public ResultModel<List<GameResultWithTime>> getGameResultByUnionId(@RequestParam(value = "unionId") String unionId) {
+        return gameService.getGameResultByUnionId(unionId);
+    }
+
+    @ApiOperation(value = "获取单人游戏记录")
+    @RequestMapping(value = "/get/result/single", method = RequestMethod.POST)
+    public ResultModel<List<SingleGameResultWithTime>> getSingleGameResultByUnionId(@RequestParam(value = "unionId") String unionId) {
+        return gameService.getSingleGameResultByUnionId(unionId);
     }
 }

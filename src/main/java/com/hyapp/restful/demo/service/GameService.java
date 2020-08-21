@@ -1,7 +1,12 @@
 package com.hyapp.restful.demo.service;
 
 import com.hyapp.restful.demo.common.ResultModel;
+import com.hyapp.restful.demo.entity.GameResult;
+import com.hyapp.restful.demo.entity.GameResultWithTime;
+import com.hyapp.restful.demo.entity.SingleGameResultWithTime;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @author Wang Zhen
@@ -24,4 +29,8 @@ public interface GameService {
     ResultModel<String> chooseCirclePunishment(Integer roomID, Integer punishmentID);
 
     ResultModel<String> choosePersonalizedPunishment(Integer roomID, String punishment);
+
+    ResultModel<List<GameResultWithTime>> getGameResultByUnionId(String unionId);
+
+    ResultModel<List<SingleGameResultWithTime>> getSingleGameResultByUnionId(String unionId);
 }

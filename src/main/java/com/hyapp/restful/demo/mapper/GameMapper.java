@@ -1,11 +1,13 @@
 package com.hyapp.restful.demo.mapper;
 
-import com.hyapp.restful.demo.entity.GameResult;
-import com.hyapp.restful.demo.entity.Room;
+import com.hyapp.restful.demo.entity.*;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author Wang Zhen
@@ -15,10 +17,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GameMapper {
 
-    @Insert("insert into room (createUserID) values (#{createUserID})")
+    @Insert("insert into room (creatorUnionId) values (#{creatorUnionId})")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     void insertRoom(Room room);
 
-    @Insert("update room set gameResult = #{gameResult} where id = #{roomID}")
-    void insertGameResult(String gameResult, Integer roomID);
+    @Insert("insert into game_result (unionId, winner, playerList, equal) values (#{unionId}, #{winner}, #{playerList}, #{equal})")
+    void insertGameResult(String unionId, String winner, String playerList, boolean equal);
+
+    @Insert("insert into game_result_single (unionId, score) values (#{unionId}, #{score})")
+    void insertSingleGameResult(String unionId, int score);
+
+    @Select("select winner, playerList, equal, createTime from game_result where unionId = #{unionId}")
+    List<GameResultWithTime> selectGameResultByUnionId(String unionId);
+
+    @Select("select score, createTime from game_result_single where unionId = #{unionId}")
+    List<SingleGameResultWithTime> selectSingleGameResultByUnionId(String unionId);
 }

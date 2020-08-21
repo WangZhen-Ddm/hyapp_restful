@@ -11,7 +11,5 @@ public class Room {
 
     private Integer id;
 
-    private GameResult gameResult;
-
-    private String createUserID;
+    private String creatorUnionId;
 }
