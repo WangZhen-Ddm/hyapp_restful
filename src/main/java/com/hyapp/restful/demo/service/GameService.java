@@ -1,5 +1,6 @@
 package com.hyapp.restful.demo.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.hyapp.restful.demo.common.ResultModel;
 import com.hyapp.restful.demo.entity.GameResult;
 import com.hyapp.restful.demo.entity.GameResultWithTime;
@@ -30,7 +31,7 @@ public interface GameService {
 
     ResultModel<String> choosePersonalizedPunishment(Integer roomID, String punishment);
 
-    ResultModel<List<GameResultWithTime>> getGameResultByUnionId(String unionId);
+    ResultModel<JSONArray> getGameResultByUnionId(String unionId);
 
     ResultModel<List<SingleGameResultWithTime>> getSingleGameResultByUnionId(String unionId);
 }

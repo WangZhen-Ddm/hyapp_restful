@@ -1,6 +1,7 @@
 package com.hyapp.restful.demo.service;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hyapp.restful.demo.common.Event;
 import com.hyapp.restful.demo.common.ResultModel;
@@ -205,12 +206,18 @@ public class GameServiceImpl implements GameService {
                 userInRoomToGameResult.put(user, userToResult.get(user));
             }
             GameResult gameResult = this.getGameResult(userInRoom, userInRoomToGameResult);
-            String winner = JSONObject.toJSONString(gameResult.getWinner());
-            String playerList = JSONObject.toJSONString(gameResult.getPlayerList());
-            boolean equal = gameResult.getEqual();
+            GameResultWithTime gameResultWithTime = new GameResultWithTime();
+            for(int i=0; i<gameResult.getPlayerList().size(); ++i) {
+                if(gameResult.getPlayerList().get(i)==gameResult.getWinner()) {
+                    gameResultWithTime.setWinnerIndex(i);
+                }
+            }
+            gameResultWithTime.setPlayerList(JSONObject.toJSONString(gameResult.getPlayerList()));
+            gameResultWithTime.setEqual(gameResult.getEqual());
             for (String user : userInRoom) {
                 userToStatus.put(user, Status.IN_ROOM);
-                gameMapper.insertGameResult(user, winner, playerList, equal);
+                gameResultWithTime.setUnionId(user);
+                gameMapper.insertGameResult(gameResultWithTime);
                 util.postEventAndMessageByProfileId(user, Event.FINISH.getEvent(), gameResult.toString());
             }
             return result.sendSuccessResult("完成游戏，请等待游戏结果！");
@@ -227,8 +234,7 @@ public class GameServiceImpl implements GameService {
             int maxResult = userInRoomToGameResult.get(userInRoom.get((0)));
             boolean equal = false;
             for(String user: userInRoom) {
-                Player player = new Player();
-                player.setUnionId(user);
+                Player player = userToPlayer.get(user);
                 int personalResult = userInRoomToGameResult.get(user);
                 player.setGameResult(personalResult);
                 playerList.add(player);
@@ -278,14 +284,32 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ResultModel<List<GameResultWithTime>> getGameResultByUnionId(String unionId) {
-        ResultModel<List<GameResultWithTime>> result = new ResultModel<>();
+    public ResultModel<JSONArray> getGameResultByUnionId(String unionId) {
+        ResultModel<JSONArray> result = new ResultModel<>();
         try {
             List<GameResultWithTime> list = gameMapper.selectGameResultByUnionId(unionId);
-            return result.sendSuccessResult(list);
+            return result.sendSuccessResult(this.getGameResultJSONArrayResult(list));
         } catch (Exception e) {
             return result.sendFailedMessage(e.getMessage());
         }
+    }
+
+    private JSONArray getGameResultJSONArrayResult (List<GameResultWithTime> list) {
+        JSONArray result = new JSONArray();
+        for (GameResultWithTime gameResultWithTime: list) {
+            JSONObject object = new JSONObject();
+            try {
+                List<Player> playerList = JSONArray.parseArray(gameResultWithTime.getPlayerList(), Player.class);
+                object.put("equal", gameResultWithTime.getEqual());
+                object.put("playerList", playerList);
+                object.put("winnerIndex", gameResultWithTime.getWinnerIndex());
+                object.put("createTime", gameResultWithTime.getCreateTime());
+                result.add(object);
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        return result;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.hyapp.restful.demo.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.hyapp.restful.demo.common.ResultModel;
 import com.hyapp.restful.demo.entity.GameResult;
 import com.hyapp.restful.demo.entity.GameResultWithTime;
@@ -90,7 +91,7 @@ public class GameController {
 
     @ApiOperation(value = "获取双人游戏记录")
     @RequestMapping(value = "/get/result", method = RequestMethod.POST)
-    public ResultModel<List<GameResultWithTime>> getGameResultByUnionId(@RequestParam(value = "unionId") String unionId) {
+    public ResultModel<JSONArray> getGameResultByUnionId(@RequestParam(value = "unionId") String unionId) {
         return gameService.getGameResultByUnionId(unionId);
     }
 

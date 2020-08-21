@@ -3,6 +3,7 @@ package com.hyapp.restful.demo.entity;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Wang Zhen
@@ -11,7 +12,9 @@ import java.util.Date;
 @Data
 public class GameResultWithTime {
 
-    private String winner;
+    private String unionId;
+
+    private Integer winnerIndex;
 
     private String playerList;
 
