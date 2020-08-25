@@ -218,7 +218,8 @@ public class GameServiceImpl implements GameService {
                 userToStatus.put(user, Status.IN_ROOM);
                 gameResultWithTime.setUnionId(user);
                 gameMapper.insertGameResult(gameResultWithTime);
-                util.postEventAndMessageByProfileId(user, Event.FINISH.getEvent(), gameResult.toString());
+                String res = util.postEventAndMessageByProfileId(user, Event.FINISH.getEvent(), gameResult.toString());
+                log.info(res);
             }
             return result.sendSuccessResult("完成游戏，请等待游戏结果！");
         } catch (Exception e) {
