@@ -20,7 +20,7 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .host("http://poct.zjubme307.cn")
+                .host("localhost:8082")
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.hyapp.restful.demo.controller"))
