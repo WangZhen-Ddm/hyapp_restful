@@ -85,6 +85,7 @@ public class GameServiceImpl implements GameService {
     public ResultModel<String> joinGame(Integer roomID, String unionId, String nickName, String picUrl) {
         ResultModel<String> result = new ResultModel<>();
         try {
+            log.info(unionId);
             if(!userToRoom.containsKey(roomID)) {
                 return result.sendFailedMessage("房间不存在！");
             }
