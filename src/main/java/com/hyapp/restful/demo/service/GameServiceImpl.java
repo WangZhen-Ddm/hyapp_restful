@@ -66,6 +66,7 @@ public class GameServiceImpl implements GameService {
     public ResultModel<Integer> createRoom(String unionId, String nickName, String picUrl) {
         ResultModel<Integer> result = new ResultModel<>();
         try {
+            log.info(unionId);
             userToStatus.put(unionId, Status.IN_ROOM);
             int roomID = this.getRoomID(unionId);
             userToRoom.put(roomID, new ArrayList<>());

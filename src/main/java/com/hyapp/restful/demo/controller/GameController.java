@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 
@@ -34,7 +35,7 @@ public class GameController {
     public ResultModel<Integer> createRoom(@RequestParam(value = "unionId") String unionId,
                                            @RequestParam(value = "nickName") String nickName,
                                            @RequestParam(value = "picUrl") String picUrl) {
-        return gameService.createRoom(unionId, nickName, picUrl);
+        return gameService.createRoom(URLEncoder.encode(unionId), nickName, picUrl);
     }
 
     @ApiOperation(value = "加入游戏")
@@ -43,28 +44,28 @@ public class GameController {
                                         @RequestParam(value = "unionId") String unionId,
                                         @RequestParam(value = "nickName") String nickName,
                                         @RequestParam(value = "picUrl") String picUrl) {
-        return gameService.joinGame(roomID, unionId, nickName, picUrl);
+        return gameService.joinGame(roomID, URLEncoder.encode(unionId), nickName, picUrl);
     }
 
     @ApiOperation(value = "离开房间")
     @RequestMapping(value = "/leave", method = RequestMethod.POST)
     public ResultModel<String> leaveGame(@RequestParam(value = "roomID") Integer roomID,
                                          @RequestParam(value = "unionId") String unionId) {
-        return gameService.leaveGame(roomID, unionId);
+        return gameService.leaveGame(roomID, URLEncoder.encode(unionId));
     }
 
     @ApiOperation(value = "玩家准备")
     @RequestMapping(value = "/status/ready", method = RequestMethod.POST)
     public ResultModel<String> setReady(@RequestParam(value = "roomID") Integer roomID,
                          @RequestParam(value = "unionId") String unionId) {
-        return gameService.setReady(roomID, unionId);
+        return gameService.setReady(roomID, URLEncoder.encode(unionId));
     }
 
     @ApiOperation(value = "玩家取消准备")
     @RequestMapping(value = "/status/unready", method = RequestMethod.POST)
     public ResultModel<String> setUnready(@RequestParam(value = "roomID") Integer roomID,
                            @RequestParam(value = "unionId") String unionId) {
-        return gameService.setUnready(roomID, unionId);
+        return gameService.setUnready(roomID, URLEncoder.encode(unionId));
     }
 
     @ApiOperation(value = "玩家游戏结束")
@@ -72,7 +73,7 @@ public class GameController {
     public ResultModel<String> finishGame(@RequestParam(value = "roomID") Integer roomID,
                                           @RequestParam(value = "unionId") String unionId,
                                           @RequestParam(value = "score") int score) {
-        return gameService.finishGame(roomID, unionId, score);
+        return gameService.finishGame(roomID, URLEncoder.encode(unionId), score);
     }
 
     @ApiOperation(value = "转盘惩罚")
@@ -92,12 +93,12 @@ public class GameController {
     @ApiOperation(value = "获取双人游戏记录")
     @RequestMapping(value = "/get/result", method = RequestMethod.POST)
     public ResultModel<JSONArray> getGameResultByUnionId(@RequestParam(value = "unionId") String unionId) {
-        return gameService.getGameResultByUnionId(unionId);
+        return gameService.getGameResultByUnionId(URLEncoder.encode(unionId));
     }
 
     @ApiOperation(value = "获取单人游戏记录")
     @RequestMapping(value = "/get/result/single", method = RequestMethod.POST)
     public ResultModel<List<SingleGameResultWithTime>> getSingleGameResultByUnionId(@RequestParam(value = "unionId") String unionId) {
-        return gameService.getSingleGameResultByUnionId(unionId);
+        return gameService.getSingleGameResultByUnionId(URLEncoder.encode(unionId));
     }
 }
